@@ -33,15 +33,8 @@ const updateUser = async (req: Request, res: Response) => {
       email
     );
 
-    if (!result.rows[0].role) {
-     return res.status(400).json({
-        succecc: true,
-        message: "Customer are not allowed to update their own role!!",
-      
-      });
-    }
 
-   return res.status(200).json({
+    return res.status(200).json({
       succecc: true,
       message: "User updated successfully",
       data: result.rows[0],
