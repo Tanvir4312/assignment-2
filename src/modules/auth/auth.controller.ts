@@ -21,13 +21,13 @@ const createUserAuth = async (req: Request, res: Response) => {
     const result = await authServices.createUserAuth(req.body);
 
     res.status(201).json({
-      succecc: true,
+      success: true,
       message: "User registered successfully",
       data: result.rows[0],
     });
   } catch (err: any) {
     res.status(500).json({
-      succecc: false,
+      success: false,
       message: err.message,
     });
   }

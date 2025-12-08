@@ -7,7 +7,7 @@ const createBookings = async (req: Request, res: Response) => {
     const result = await bookingsServices.createBookings(req.body);
 
     res.status(201).json({
-      succecc: true,
+      success: true,
       message: "Booking created successfully",
       data: result,
     });
@@ -28,14 +28,14 @@ const getAllBookings = async (req: Request, res: Response) => {
 
     if(role === 'admin'){
       res.status(200).json({
-      succecc: true,
+      success: true,
       message: "Bookings retrieved successfully",
       data: result.rows,
     });
     }
 
     res.status(200).json({
-      succecc: true,
+      success: true,
       message: "Bookings retrieved successfully",
       data: result,
     });
@@ -56,18 +56,21 @@ const updateBookings = async (req: Request, res: Response) => {
       bookingId as string,
       userRole
     );
-    const status = result.rows[0].status;
-    if (status === "returned") {
-      return res.status(200).json({
-        succecc: true,
+    if (result!.rows[0].status) {
+      const status = result!.rows[0].status;
+      if(status === 'returned'){
+        return res.status(200).json({
+        success: true,
         message: "Booking marked as returned. Vehicle is now available",
-        data: result.rows[0],
+        data: result!.rows[0],
       });
+      }
+      
     }
     return res.status(200).json({
-      succecc: true,
+      success: true,
       message: "Bookings cancelled successfully",
-      data: result.rows[0],
+      data: result!.rows[0],
     });
   } catch (err: any) {
     res.status(500).json({

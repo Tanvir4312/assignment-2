@@ -23,13 +23,13 @@ const createVehicle = async (req: Request, res: Response) => {
   try {
     const result = await vehicleServices.createVehicle(req.body);
     res.status(201).json({
-      succecc: true,
+      success: true,
       message: "Vehicle created successfully",
       data: result.rows[0],
     });
   } catch (err: any) {
     res.status(500).json({
-      succecc: false,
+      success: false,
       message: err.message,
     });
   }
@@ -49,13 +49,13 @@ const getAllVehicle = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({
-      succecc: true,
+      success: true,
       message: "Vehicles retrieved successfully",
       data: result.rows,
     });
   } catch (err: any) {
     res.status(500).json({
-      succecc: false,
+      success: false,
       message: err.message,
     });
   }
@@ -72,13 +72,13 @@ const getSingleVehicle = async (req: Request, res: Response) => {
     }
 
     res.status(200).json({
-      succecc: true,
+      success: true,
       message: "Vehicle retrieved successfully",
       data: result.rows[0],
     });
   } catch (err: any) {
     res.status(500).json({
-      succecc: false,
+      success: false,
       message: err.message,
     });
   }
@@ -104,13 +104,13 @@ const updateVehicle = async (req: Request, res: Response) => {
       vehicleId as string
     );
     res.status(200).json({
-      succecc: true,
+      success: true,
       message: "Vehicle updated successfully",
       data: result.rows[0],
     });
   } catch (err: any) {
     res.status(500).json({
-      succecc: false,
+      success: false,
       message: err.message,
     });
   }
@@ -123,12 +123,12 @@ const deleteVehicle = async (req: Request, res: Response) => {
   try {
     await vehicleServices.deleteVehicle(vehicleId as string);
     res.status(200).json({
-      succecc: true,
+      success: true,
       message: "Vehicle deleted successfully",
     });
   } catch (err: any) {
     res.status(500).json({
-      succecc: false,
+      success: false,
       message: err.message,
     });
   }
