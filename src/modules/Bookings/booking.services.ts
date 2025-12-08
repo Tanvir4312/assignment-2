@@ -151,11 +151,7 @@ const updateBooking = async (
   }
 
   if (userRole === "customer") {
-    console.log({ star_date: startDate.getTime(), Today: today.getTime() });
-    if (
-      startDate.getTime() === today.getTime() ||
-      startDate.getTime() < today.getTime()
-    ) {
+    if (startDate === today || startDate < today) {
       throw new Error("Cancel booking before Start date only");
     }
   }
