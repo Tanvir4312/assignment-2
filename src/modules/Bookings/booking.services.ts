@@ -80,7 +80,6 @@ const getAllBooking = async (role: string, id: string) => {
     );
 
     const vehicle_id = result.rows[0].vehicle_id;
-  
 
     //get specific vehicle table
     const vehicleTable = await pool.query(
@@ -89,17 +88,17 @@ const getAllBooking = async (role: string, id: string) => {
         `,
       [vehicle_id]
     );
-    const vehicleData = vehicleTable.rows[0]
+    const vehicleData = vehicleTable.rows[0];
     const vehicle = {
       vehicle_name: vehicleData.vehicle_name,
       registration_number: vehicleData.registration_number,
       type: vehicleData.type,
     };
-  
+
     const response = {
       ...result.rows[0],
-      vehicle
-    }
+      vehicle,
+    };
 
     return response;
   }
@@ -143,8 +142,22 @@ const updateBooking = async (
   const periodEnd = oldField.rent_end_date.toLocaleDateString();
   const today = date.toLocaleDateString();
 
-  if (userRole === "admin") {
+  if (userRole === "customer") {
     if (status === "returned") {
+      throw new Error("Only admin booking status returned!!!");
+    }
+  }
+
+  if (userRole === "customer") {
+    if (startDate === today || startDate < today) {
+      throw new Error(" Cancel booking before Start date only");
+    }
+  }
+
+  if (userRole === "admin") {
+   
+    if (status === "returned") {
+     
       //   update vehicle
       await pool.query(
         `
@@ -153,12 +166,6 @@ const updateBooking = async (
         ["available", vehicleId]
       );
     }
-  } else {
-    throw new Error("Only admin booking status returned");
-  }
-
-  if (startDate === today) {
-    throw new Error(" Cancel booking before Start date only");
   }
 
   if (today > periodEnd) {
@@ -201,6 +208,14 @@ const updateBooking = async (
       updateStatus,
       id,
     ]
+  );
+
+  //   update vehicle
+  await pool.query(
+    `
+   UPDATE vehicles SET availability_status=$1 WHERE id=$2
+    `,
+    ["available", vehicleId]
   );
   return result;
 };
