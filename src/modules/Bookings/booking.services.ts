@@ -27,7 +27,7 @@ const createBookings = async (payload: Record<string, unknown>) => {
 
   const duration =
     (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
- 
+
   const dailyRtRentPrice = vehicleData.daily_rent_price;
   const total_price = dailyRtRentPrice * duration;
 
@@ -131,7 +131,6 @@ const updateBooking = async (
 
   const oldField = exist.rows[0];
 
-
   const customerId = customer_id ? customer_id : oldField.customer_id;
   const vehicleId = vehicle_id ? vehicle_id : oldField.vehicle_id;
   const rentStartDate = rent_start_date
@@ -151,16 +150,17 @@ const updateBooking = async (
     }
   }
 
-  // if (userRole === "customer") {
-  //   console.log({star_date: startDate.getTime(), Today:today.getTime()})
-  //   if (startDate.getTime() === today.getTime() || startDate.getTime()  < today.getTime()) {
-  //     throw new Error("Cancel booking before Start date only");
-  //   }
-  // }
-  // let result;
+  if (userRole === "customer") {
+    console.log({ star_date: startDate.getTime(), Today: today.getTime() });
+    if (
+      startDate.getTime() === today.getTime() ||
+      startDate.getTime() < today.getTime()
+    ) {
+      throw new Error("Cancel booking before Start date only");
+    }
+  }
 
   if (userRole === "admin") {
-  
     if (updateStatus === "returned") {
       const result = await pool.query(
         `
@@ -212,32 +212,32 @@ const updateBooking = async (
     return result;
   }
 
-  // if (today > periodEnd && updateStatus !== 'canclled') {
-  //   const result = await pool.query(
-  //     `
-  //       UPDATE bookings SET customer_id=$1, vehicle_id=$2, rent_start_date=$3, rent_end_date=$4, total_price=$5, status=$6 WHERE id=$7 RETURNING *
-  //       `,
-  //     [
-  //       customerId,
-  //       vehicleId,
-  //       rentStartDate,
-  //       rentEndDate,
-  //       totalPrice,
-  //       "returned",
-  //       id,
-  //     ]
-  //   );
+  if (today > periodEnd && updateStatus !== "canclled") {
+    const result = await pool.query(
+      `
+        UPDATE bookings SET customer_id=$1, vehicle_id=$2, rent_start_date=$3, rent_end_date=$4, total_price=$5, status=$6 WHERE id=$7 RETURNING *
+        `,
+      [
+        customerId,
+        vehicleId,
+        rentStartDate,
+        rentEndDate,
+        totalPrice,
+        "returned",
+        id,
+      ]
+    );
 
-  //   //   update vehicle
-  //   await pool.query(
-  //     `
-  //  UPDATE vehicles SET availability_status=$1 WHERE id=$2
-  //   `,
-  //     ["available", vehicleId]
-  //   );
+    //   update vehicle
+    await pool.query(
+      `
+   UPDATE vehicles SET availability_status=$1 WHERE id=$2
+    `,
+      ["available", vehicleId]
+    );
 
-  //   return result;
-  // }
+    return result;
+  }
 };
 
 export const bookingsServices = {
