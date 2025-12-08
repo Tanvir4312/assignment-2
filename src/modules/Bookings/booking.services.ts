@@ -27,7 +27,7 @@ const createBookings = async (payload: Record<string, unknown>) => {
 
   const duration =
     (endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24) + 1;
-  console.log(duration);
+ 
   const dailyRtRentPrice = vehicleData.daily_rent_price;
   const total_price = dailyRtRentPrice * duration;
 
@@ -130,7 +130,7 @@ const updateBooking = async (
   );
 
   const oldField = exist.rows[0];
-  // console.log(oldField)
+
 
   const customerId = customer_id ? customer_id : oldField.customer_id;
   const vehicleId = vehicle_id ? vehicle_id : oldField.vehicle_id;
@@ -151,15 +151,16 @@ const updateBooking = async (
     }
   }
 
-  if (userRole === "customer") {
-    if (startDate === today || startDate < today) {
-      throw new Error(" Cancel booking before Start date only");
-    }
-  }
+  // if (userRole === "customer") {
+  //   console.log({star_date: startDate.getTime(), Today:today.getTime()})
+  //   if (startDate.getTime() === today.getTime() || startDate.getTime()  < today.getTime()) {
+  //     throw new Error("Cancel booking before Start date only");
+  //   }
+  // }
   // let result;
 
   if (userRole === "admin") {
-    console.log(userRole);
+  
     if (updateStatus === "returned") {
       const result = await pool.query(
         `
