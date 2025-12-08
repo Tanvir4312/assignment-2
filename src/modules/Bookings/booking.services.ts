@@ -73,7 +73,7 @@ const getAllBooking = async (role: string, id: string) => {
     const result = await pool.query(`
         SELECT * FROM bookings
         `);
-    return result;
+    return result.rows;
   } else {
     const result = await pool.query(
       `
@@ -99,7 +99,7 @@ const getAllBooking = async (role: string, id: string) => {
     };
 
     const response = {
-      ...result.rows[0],
+      ...result.rows,
       vehicle,
     };
 
